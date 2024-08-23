@@ -3,8 +3,6 @@ import gspread
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import os
-import json
 
 #### ATUALIZAR O ARQUIVO DAS BIBLIOTECAS
 #pip freeze > requirements.txt
@@ -22,13 +20,12 @@ def convert_to_float(value):
     except ValueError:
         return None  
 
-nome_credencial = os.getenv("CREDENCIAL_SHEETS")
-credencial = json.loads(nome_credencial)
+nome_credencial = st.secrets["CREDENCIAL_SHEETS"]
+#credencial = json.loads(nome_credencial)
 
+credentials = service_account.Credentials.from_service_account_info(nome_credencial)
 scope = ['https://www.googleapis.com/auth/spreadsheets']
-
-credentials = service_account.Credentials.from_service_account_file(credencial, scopes=scope)
-
+credentials = credentials.with_scopes(scope)
 client = gspread.authorize(credentials)
 
 # Abrir a planilha desejada pelo seu ID
