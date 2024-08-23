@@ -3,6 +3,16 @@ import gspread
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+import os
+import json
+
+#### ATUALIZAR O ARQUIVO DAS BIBLIOTECAS
+#pip freeze > requirements.txt
+
+###COMMIT no terminal
+#git add main.py
+#git commit -m "Descrição das mudanças realizadas"
+#git push origin main
 
 def convert_to_float(value):
     try:
@@ -12,9 +22,12 @@ def convert_to_float(value):
     except ValueError:
         return None  
 
+nome_credencial = os.getenv("CREDENCIAL_SHEETS")
+credencial = json.loads(nome_credencial)
+
 scope = ['https://www.googleapis.com/auth/spreadsheets']
-cred = 'credencial.json'
-credentials = service_account.Credentials.from_service_account_file(cred, scopes=scope)
+
+credentials = service_account.Credentials.from_service_account_file(credencial, scopes=scope)
 
 client = gspread.authorize(credentials)
 
@@ -33,7 +46,7 @@ df = pd.DataFrame(sheet_data)
 df.columns = df.iloc[0]
 df = df.drop(0).reset_index(drop=True)
 df['Data_venc'] = pd.to_datetime(df['Data_venc']) #Convertendo Data_venc do BD em Data
-print(df['Valor_Depto'].head())  # Para depuração
+#print(df['Valor_Depto'].head())  # Para depuração
 df['Valor_Depto'] = df['Valor_Depto'].apply(convert_to_float)
 
 
@@ -62,14 +75,7 @@ df_Despesas = df_filtrado.groupby(['Mes', 'Ano'])['Valor_Depto'].sum().reset_ind
 df_Despesas.rename(columns={'Valor_Depto': 'Despesas'}, inplace=True)
 df_Despesas['Mes_Ano'] = df_Despesas['Mes'].astype(str) + '/' + df_Despesas['Ano'].astype(str)
 
-#df_pivot = df_Despesas.pivot_table(index=['Mes', 'Ano'],
-#                          columns='Descricao',
-#                          values='Valor_Depto',
-#                          aggfunc='sum').reset_index()
-#df_despesas_m = df_pivot.melt(id_vars=['Mes', 'Ano'], 
-#                          var_name='Descricao', 
-#                          value_name='Valor_Depto')
-#print(df_despesas_m)
+
 with col2:
     fig = px.bar(df_Despesas, 
                 x='Mes_Ano', 
@@ -82,5 +88,3 @@ with col2:
 
     st.subheader('Grafico acumulado')
     st.plotly_chart(fig)
-
-

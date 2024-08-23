@@ -13,9 +13,11 @@ google-auth-oauthlib==1.2.1
 google-cloud-bigquery==3.25.0
 google-cloud-bigquery-storage==2.25.0
 google-cloud-core==2.4.1
+google-cloud-secret-manager==2.20.2
 google-crc32c==1.5.0
 google-resumable-media==2.7.2
 googleapis-common-protos==1.63.2
+grpc-google-iam-v1==0.13.1
 grpcio==1.65.4
 grpcio-status==1.62.3
 gspread==6.1.2
