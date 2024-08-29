@@ -79,7 +79,8 @@ with col2:
                 y='Despesas', 
                 #color='Descricao',
                 text='Despesas',
-                labels={'Despesas':'Soma de Valor_Depto', 'Mes' : 'Mes'}
+                labels={'Despesas':'Soma de Valor_Depto', 'Mes' : 'Mes'},
+                color_discrete_sequence=['black']
                 )
 
 
