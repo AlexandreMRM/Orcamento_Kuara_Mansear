@@ -13,6 +13,7 @@ def convert_to_float(value):
     except ValueError:
         return None  
 
+#CREDENCIAL DE ACESSO A PLANILHA - DENTRO DO CLOUD STREAMLIT
 nome_credencial = st.secrets["CREDENCIAL_SHEETS"]
 
 credentials = service_account.Credentials.from_service_account_info(nome_credencial)
@@ -26,7 +27,8 @@ spreadsheet = client.open_by_key('1Zlih7-JKNwBhpXOiefUyhwbQyzt7O3TsDJhK7peWY8w')
 # Selecionar a primeira planilha
 sheet = spreadsheet.worksheet("BD - Geral")
 
-sheet_data = sheet.get_all_values() # Carrega todos os valores que tem na planilha google e aba BD Geral
+# Carrega todos os valores que tem na planilha google e aba BD Geral
+sheet_data = sheet.get_all_values() 
 
 # Converter para um DataFrame pandas
 df = pd.DataFrame(sheet_data)
@@ -40,6 +42,7 @@ df['Valor_Depto'] = df['Valor_Depto'].apply(convert_to_float)
 
 
 #============================================
+#LAYOUT TELA
 st.set_page_config(layout='wide')
 st.markdown("""
             <style>
@@ -51,7 +54,9 @@ st.markdown("""
             }
             <style>
             """, unsafe_allow_html=True)
+#TITULO DA PAGINA
 st.title('Despesas - Kuara')
+#DESCRICAO DA PAGINA
 st.write('Aqui você pode visualizar as receitas e despesas do Acumuladas, mês a mês.')
 
 col1, col2 = st.columns([1, 5])
@@ -74,6 +79,7 @@ with col1:
     else:
         df_filtrado = df[(df['Data_venc'].dt.date >= data_inicial) & (df['Data_venc'].dt.date <= data_final) & (df['Desc_Depto']== select_depart)]
 
+#FILTRA OS RESULTADOS COM BASE NAS DATAS
 df_Despesas = df_filtrado.groupby(['Mes', 'Ano'])['Valor_Depto'].sum().reset_index()
 df_Despesas.rename(columns={'Valor_Depto': 'Despesas'}, inplace=True)
 df_Despesas['Mes'] = df_Despesas['Mes'].astype(int)
@@ -81,6 +87,7 @@ df_Despesas = df_Despesas.sort_values(by=['Mes', 'Ano'])
 df_Despesas['Mes_Ano'] = df_Despesas['Mes'].astype(str).str.zfill(2) + '/' + df_Despesas['Ano'].astype(str)
 
 
+#EXIBE OS GRAFICOS
 with col2:
     fig = px.bar(df_Despesas, 
                 x='Mes_Ano', 
