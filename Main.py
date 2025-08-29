@@ -5,14 +5,6 @@ import plotly.express as px
 import streamlit as st
 from datetime import date
 
-#### ATUALIZAR O ARQUIVO DAS BIBLIOTECAS
-#pip freeze > requirements.txt
-
-###COMMIT no terminal
-#git add main.py
-#git commit -m "Descrição das mudanças realizadas"
-#git push origin main
-
 def convert_to_float(value):
     try:
         # Remover pontos usados como separadores de milhar e substituir a vírgula por ponto
@@ -22,7 +14,6 @@ def convert_to_float(value):
         return None  
 
 nome_credencial = st.secrets["CREDENCIAL_SHEETS"]
-#credencial = json.loads(nome_credencial)
 
 credentials = service_account.Credentials.from_service_account_info(nome_credencial)
 scope = ['https://www.googleapis.com/auth/spreadsheets']
